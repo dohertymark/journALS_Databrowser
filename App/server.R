@@ -75,10 +75,9 @@ server <- function(session,input, output) {
 	####=========================================================================###
 	####=========================================================================###
 	
-		screen_width <- reactive({ifelse(!is.null(input$innerWidth),input$innerWidth,0)})
+	screen_width <- reactive({ifelse(!is.null(input$innerWidth),input$innerWidth,0)})
 
-		output$server.acmg_pathogenicity_plots <- renderPlot({render.acmg_pathogenicity_plots(selected_variant$selected_variant,lit_review_pen,min(600,screen_width()))}, height=reactive(min(600,screen_width())),width=reactive(min(600,screen_width())))
-		#output$server.acmg_pathogenicity_plots <- renderPlot({render.acmg_pathogenicity_plots(selected_variant$selected_variant,lit_review_pen,screen_width$screen_width)}, height=screen_width$screen_width,width=screen_width$screen_width)
+	output$server.acmg_pathogenicity_plots <- renderPlot({render.acmg_pathogenicity_plots(selected_variant$selected_variant,lit_review_pen,min(600,screen_width()))}, height=reactive(min(600,screen_width())),width=reactive(min(600,screen_width())))
 
 	####=========================================================================###
 	####=========================================================================###
@@ -88,8 +87,6 @@ server <- function(session,input, output) {
 	####=========================================================================###
 	####=========================================================================###
 	output$server.heterogeneity_plots <- renderPlot({render.heterogeneity_plots(input$gene_variant_browser,selected_variant$selected_variant,lit_review_pen,as.numeric(input$heterogeneity_selection),input$heterogeneity_phenotype_selection,input$heterogeneity_family_selection)}, width=800,height=400)
-	#output$server.heterogeneity_plots <- renderPlot({render.heterogeneity_plots(input$gene_variant_browser,selected_variant$selected_variant,lit_review_pen,as.numeric(input$heterogeneity_selection),input$heterogeneity_phenotype_selection,input$heterogeneity_family_selection,400)}, width=400,height=200)
-	#output$server.heterogeneity_plots <- renderPlot({render.heterogeneity_plots(input$gene_variant_browser,selected_variant$selected_variant,lit_review_pen,as.numeric(input$heterogeneity_selection),input$heterogeneity_phenotype_selection,input$heterogeneity_family_selection,min(800,screen_width())/2)}, width=reactive(min(800,screen_width())),height=reactive(min(800,screen_width())/2))	
 	####=========================================================================###
 	####=========================================================================###
 
@@ -98,7 +95,7 @@ server <- function(session,input, output) {
 	####=========================================================================###
 	####=========================================================================###
 
-output$server.regions_analysis_plot <- renderPlot({render.regions_analysis_plot(input$selection_region_browser,input$region_region_browser,input$regions_pathogenicity_selection,input$regions_phenotype_selection,input$regions_history_selection,input$fam_prop_slider,lit_review_pen,min(700,screen_width()))}, width=reactive(min(700,screen_width())),height=reactive(min(700,screen_width())*9/7))
+	output$server.regions_analysis_plot <- renderPlot({render.regions_analysis_plot(input$selection_region_browser,input$region_region_browser,input$regions_pathogenicity_selection,input$regions_phenotype_selection,input$regions_history_selection,input$fam_prop_slider,lit_review_pen,min(700,screen_width()))}, width=reactive(min(700,screen_width())),height=reactive(min(700,screen_width())*9/7))
 
 	####=========================================================================###
 	####=========================================================================###
@@ -112,7 +109,7 @@ output$server.regions_analysis_plot <- renderPlot({render.regions_analysis_plot(
 	
 	# Gene Layout Plot 
 
-output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gene,input$gene_coordinates_plot_dataset_filter,input$plot_introns,input$transcript_selection,min(700,screen_width()))}, width=reactive(min(700,screen_width())),height=reactive(min(700,screen_width())*5/7))
+	output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gene,input$gene_coordinates_plot_dataset_filter,input$plot_introns,input$transcript_selection,min(700,screen_width()))}, width=reactive(min(700,screen_width())),height=reactive(min(700,screen_width())*5/7))
 
 	####=========================================================================###
 	####=========================================================================###
@@ -120,7 +117,9 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 	# AGE PLOT
 
 	output$server.age_plot<-renderPlot({render.age_plot(input$age_phenotype,input$age_phenotype2,input$age_sex,input$age_sex2,input$age_fam,input$age_fam2,selected_variant$selected_variant,input$gene_variant_browser,input$age_plot_style,min(600,screen_width()))},height=reactive(min(600,screen_width())*2/3),width=reactive(min(600,screen_width())))
-
+	
+	####=========================================================================###
+	####=========================================================================###
 
 	# PEDIGREE PLOTS
 
@@ -137,10 +136,7 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 	####=========================================================================###
 	####=========================================================================###
   
-  output$server.summary.proportion_explained.plot <- renderPlot({render.summary.proportion_explained.plot(lit_review_pen,min(1200,screen_width()))}, width=reactive(min(1200,screen_width())),height=reactive(min(1200,screen_width())*25/120))	#output$server.summary.proportion_explained.plot <- renderPlot({render.summary.proportion_explained.plot(lit_review_pen)}, width=1200,height=250)
-
-
-
+  	output$server.summary.proportion_explained.plot <- renderPlot({render.summary.proportion_explained.plot(lit_review_pen,min(1200,screen_width()))}, width=reactive(min(1200,screen_width())),height=reactive(min(1200,screen_width())*25/120))	#output$server.summary.proportion_explained.plot <- renderPlot({render.summary.proportion_explained.plot(lit_review_pen)}, width=1200,height=250)
 
 
 	####=========================================================================###
@@ -179,7 +175,6 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 	output$summary.header.text<-renderUI({HTML("<b>Results Overview</b>")})
 	output$summary.overview.text1<-renderUI({HTML("<div style='color:grey'>Our analysis identifies XXX pathogenic or likely pathogenic variants in XXX genes. Please see below for a a summary of the individual properties of these genes. While non benign variants in these genes are present in 67% of familial ALS and 51% of familial FTD, this is reduced to 39% and 38% respectively when considering strictly pathogenic variants.")})
 	output$summary.gene.text1<-renderUI({HTML(gene_text(input$summary_gene_selection))})
-
 
 
 	###################################
@@ -251,8 +246,6 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 				deferRender = TRUE,
 				autoWidth = TRUE,
 				columnDefs = list(list(width = '20px', targets = columns))
-				#columnDefs = list(list(width = '20px', targets = columns)),
-				#fixedColumns = list(leftColumns = 2)
 				),
 			rownames= FALSE,escape=FALSE
 			)
@@ -309,7 +302,6 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 			dataset=population_studies[population_studies$Country==input$region_region_browser,]
 		}
 		# Remove unneccesary columns
-		#dataset<-subset(dataset,select=-c(V8,V9))
 		columns<- colnames(dataset)
 		DT::datatable(
 			data=dataset,
@@ -341,7 +333,6 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 		updateSelectizeInput(
 			session,
 			"gene",
-			#choices=gsub("_post_analysis.tsv","",list.files('Datafiles/Genes')),
 			choices=unique(lit_review_pen$gene[!is.na(lit_review_pen$gene)]),
 			server=TRUE,
 			selected="TARDBP"
@@ -382,14 +373,12 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 			"transcript_selection",
 			choices=unique(gene_coordinates$name[gene_coordinates$name2==input$gene]),
 			server=TRUE
-			#selected=head(unique(gene_coordinates$name[gene_coordinates$name2==input$gene]),1)
 			)
 		})
 	observe({
 		updateSelectizeInput(
 			session,
 			"gene_variant_browser",
-			#choices=gsub("_post_analysis.tsv","",list.files('Datafiles/Genes')),
 			choices=unique(lit_review_pen$gene[!is.na(lit_review_pen$gene)]),
 			server=TRUE,
 			selected="TARDBP"
@@ -464,16 +453,6 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 			"pedigree_selection",
 			choices=unique(separate_rows(lit_review_pen[lit_review_pen$HGVS==selected_variant$selected_variant & is.na(lit_review_pen$HGVS)==FALSE,],all_carriers_pedigree,sep="\\|",convert=T)$all_carriers_pedigree)[is.na(unique(separate_rows(lit_review_pen[lit_review_pen$HGVS==selected_variant$selected_variant & is.na(lit_review_pen$HGVS)==FALSE,],all_carriers_pedigree,sep="\\|",convert=T)$all_carriers_pedigree))==FALSE],server=TRUE)
 		})
-	#observe({
-	#	updateSelectInput(
-	#		session,
-	#		base_gene_dataframe,
-	#		)
-	#	})
-
-	# observeEvent(input$double_clicked,{
-	# 	selected_points <<- lit_review_pen[0, ]
-	# 	})
 
 	####=========================================================================###
 	####=========================================================================###
@@ -496,8 +475,6 @@ output$server.gene_plot <- renderPlot({render.gene_plot(lit_review_pen,input$gen
 					mar=c(6,6,2,2),
 					las=0,
 					mgp = c(4, 1, 0))
-				#render.comparison_plots(lit_review_pen,as.numeric(input$dataset),selected(),as.numeric(input$gnomAD_selection),as.numeric(input$dataset_selection),as.numeric(input$colour_fill),input$gene,input$freq,as.numeric(input$regression_line),input$gene_plot_pathogenicity_filter)
-				#render.comparison_plots(lit_review_pen,as.numeric(input$dataset),input$variant_highlighter,as.numeric(input$gnomAD_selection),as.numeric(input$dataset_selection),as.numeric(input$colour_fill),input$gene,input$freq,as.numeric(input$regression_line),input$gene_plot_pathogenicity_filter)	# This version has the ability to select dataset 			
 				render.comparison_plots(lit_review_pen,input$variant_highlighter,as.numeric(input$gnomAD_selection),as.numeric(input$dataset_selection),as.numeric(input$colour_fill),input$gene,input$freq,as.numeric(input$regression_line),input$gene_plot_pathogenicity_filter)				
 				
 				dev.off()
