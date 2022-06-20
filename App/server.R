@@ -1,5 +1,5 @@
 # run as runApp("App/")
-setwd("/Users/markdoherty/Documents/GitHub/journALS/")
+setwd("/journALS_Databrowser")
 
 
 ################################################################################
