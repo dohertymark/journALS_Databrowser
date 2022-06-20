@@ -116,6 +116,7 @@ render.acmg_pathogenicity_plots=function(input_variant,lit_review_pen,plot_heigh
     k=k-box_width-gap
   }
 }
+
 # ####=========================================================================###
 # ####=========================================================================###
 
@@ -123,14 +124,20 @@ render.acmg_pathogenicity_plots=function(input_variant,lit_review_pen,plot_heigh
 
 # ####=========================================================================###
 # ####=========================================================================###
+
+# Write gene text
 gene_text=function(input_gene){
   gene_text<- gene_summary_text[[input_gene]]
   return(paste("<div style='color:grey'>",gene_text,sep=""))
 }
+
+# Write gene summary text
 gene_summary_text <- list(
   "SOD1"="Of 244 reported SOD1 variants, 49 are identified as P or LP causes of ALS. Variants are present in every exon and all are missense, with no B or LB missense variants observed (supplementary figure XXX A). These variants are a major global cause of FALS (11.0%: 95% CI 9.7-12.5%) and a minor cause of SALS (0.9%: 95% CI 0.8-1.2%) (supplementary figure xxx); and while several variants are rare globally, they explain large proportions of cases in a particular region and thus have significant within- or between-continent geographic heterogeneity (supplementary figure xxxx). ALS patients with P or LP variants in SOD1 have an earlier median AOO (48.5: 95% CI 46.5-50) than non-SOD1 variants (55: 95% CI 55-56) (supplementary figure XXX), although this does not appear to be the case for all SOD1 P or LP variants. Carriers of SOD1 VUS also present with moderately early AOO, indicating the presence of further P variants currently with insufficient supporting evidence. While three ALS-FTD SOD1 variant carriers are reported, two of these individuals carry a LB or intronic variant, indicating an alternative genetic cause.",
   "TARDBP"="10 P or LP missense variants are found in the C-terminal glycine rich final exon of TARDBP (supplementary figure XXX ). These variants present with phenotypes spanning the ALS-FTD spectrum; although this may be variant dependent (supplementary figure XXX). P and LP TARDBP variants are major global causes of FALS (4.0%: 95% CI 3.2%-5.0%) and FFTD (2.0% 95% CI 1.0-3.8%) and are also observed in SALS (0.9% 95% CI 0.7-1.1%) and SFTD (0.2% 95% CI 0.03-0.9%). Geographic heterogeneity is observed for TARDBP:c.1144G>A(p.[A382T]) which is present in a large proportion of Sardinian FALS (32% 95% CI 23.0-42.1%) and SALS (20.4% 95% CI 15.8-25.6%) cases but is virtually absent throughout the rest of the world."
   )
+
+# Create linear scale bars 
 scale_bar_plot_linear=function(left,right,text_size,plot_height){
     # Set text size 
   # Plot side by side linear scale bars 
@@ -144,13 +151,15 @@ scale_bar_plot_linear=function(left,right,text_size,plot_height){
   text(c(left,left+0.2*(right-left),left+0.4*(right-left),left+0.6*(right-left),left+0.8*(right-left),right),5,c("0","20","40","60","80","100%"),col=nicegrey,adj=0.5,cex=text_size*plot_height/1200)
 
 }
-log_position=function(numberofbreaks,value){
 
+#Calculate the log position
+log_position=function(numberofbreaks,value){
   # Function to convert a value to it's position on a log scale 
   100*(log10(value)+2)/numberofbreaks
 }
-scale_bar_plot_log=function(left,right,text_size){
 
+# Plot a log scale bar 
+scale_bar_plot_log=function(left,right,text_size){
   # Plot side by side log scale bars 
   # Horizontal Lines
   # Need to create axis break 
@@ -166,10 +175,9 @@ scale_bar_plot_log=function(left,right,text_size){
   }
   # text for scale bar 
   text(c(left,left+0.25*(right-left),left+0.5*(right-left),left+0.75*(right-left),right),5,c("0","0.1","1","10","100%") ,col=nicegrey,adj=0.5,cex=text_size)
-
 }
 
-
+# Render the proportion of cases explained in summary tab
 render.summary.proportion_explained.plot=function(lit_review_pen,plot_height){
   par(mfrow=c(1,1), mai = c(0.1,0.1,0.1,0.1))
   # Create Blank Plot 
@@ -222,92 +230,91 @@ render.summary.proportion_explained.plot=function(lit_review_pen,plot_height){
       regions_history_selection="Familial"
       regions_pathogenicity_selection="1"
       regions_phenotype_selection="FTD"
-  }
+    }
   
-  # Get list of potential variants 
-  # This is clunky as taken from the journALS data browser script so has unneccessary redundancy
-  regions_pathogenicity_selection1=list_of_pathogenic_variants[[as.numeric(regions_pathogenicity_selection)]]
-  # If selection is familial or sporadic can calculate these directly 
-  if (regions_history_selection=="Familial" | regions_history_selection=="Sporadic"){
-    # Filter population individuals: phenotype of interest; history of interest ; variant matches 
-    population_people_use    <- population_people_dataset[population_people_dataset$population_carriers_primary_phenotype==regions_phenotype_selection & !is.na(population_people_dataset$population_carriers_primary_phenotype) & population_people_dataset$population_carriers_family_history==regions_history_selection & !is.na(population_people_dataset$population_carriers_family_history) & (population_people_dataset$HGVS %in% regions_pathogenicity_selection1),]
-    # Filter population studies: phenotype of interest; history of interest 
-    population_studies_use   <- population_studies[population_studies$Phenotype==regions_phenotype_selection & !is.na(population_studies$Phenotype) & population_studies$History==regions_history_selection & !is.na(population_studies$History),]
-    # Collapse Files If there is a file to collapse 
-    if (nrow(population_studies_use)>0){
-      population_studies_use_collapse <- aggregate(population_studies_use$Count,by=list(gene=population_studies_use$Gene),FUN=sum)
-      # Create blank column
-      population_studies_use_collapse$Carrier_count<-0
-      # Sum the carriers from each country 
-      for (Gene in population_studies_use_collapse$gene){
-        population_studies_use_collapse$Carrier_count <- ifelse(population_studies_use_collapse$gene==Gene,nrow(population_people_use[population_people_use$gene==Gene,]),population_studies_use_collapse$Carrier_count)
+    # Get list of potential variants 
+    # This is clunky as taken from the journALS data browser script so has unneccessary redundancy
+    regions_pathogenicity_selection1=list_of_pathogenic_variants[[as.numeric(regions_pathogenicity_selection)]]
+    # If selection is familial or sporadic can calculate these directly 
+    if (regions_history_selection=="Familial" | regions_history_selection=="Sporadic"){
+      # Filter population individuals: phenotype of interest; history of interest ; variant matches 
+      population_people_use    <- population_people_dataset[population_people_dataset$population_carriers_primary_phenotype==regions_phenotype_selection & !is.na(population_people_dataset$population_carriers_primary_phenotype) & population_people_dataset$population_carriers_family_history==regions_history_selection & !is.na(population_people_dataset$population_carriers_family_history) & (population_people_dataset$HGVS %in% regions_pathogenicity_selection1),]
+      # Filter population studies: phenotype of interest; history of interest 
+      population_studies_use   <- population_studies[population_studies$Phenotype==regions_phenotype_selection & !is.na(population_studies$Phenotype) & population_studies$History==regions_history_selection & !is.na(population_studies$History),]
+      # Collapse Files If there is a file to collapse 
+      if (nrow(population_studies_use)>0){
+        population_studies_use_collapse <- aggregate(population_studies_use$Count,by=list(gene=population_studies_use$Gene),FUN=sum)
+        # Create blank column
+        population_studies_use_collapse$Carrier_count<-0
+        # Sum the carriers from each country 
+        for (Gene in population_studies_use_collapse$gene){
+          population_studies_use_collapse$Carrier_count <- ifelse(population_studies_use_collapse$gene==Gene,nrow(population_people_use[population_people_use$gene==Gene,]),population_studies_use_collapse$Carrier_count)
+        }
+        # Get the proportion + CI of carriers for each country 
+        population_studies_use_collapse$proportion        <-binom.confint(x=population_studies_use_collapse$Carrier_count,n=population_studies_use_collapse$x,method='wilson')$mean
+        population_studies_use_collapse$proportion.lower  <-binom.confint(x=population_studies_use_collapse$Carrier_count,n=population_studies_use_collapse$x,method='wilson')$lower
+        population_studies_use_collapse$proportion.upper  <-binom.confint(x=population_studies_use_collapse$Carrier_count,n=population_studies_use_collapse$x,method='wilson')$upper
+        # Filter file to pathogenic or LP genes 
+        if (regions_pathogenicity_selection == as.numeric(1)) {
+          population_studies_use_collapse=population_studies_use_collapse[population_studies_use_collapse$gene %in% path_genes,]
+        } 
+        else if ((regions_pathogenicity_selection == as.numeric(2))|(regions_pathogenicity_selection == as.numeric(3))) {
+          population_studies_use_collapse=population_studies_use_collapse[population_studies_use_collapse$gene %in% p_or_lp_genes,]
+        }
+        # Reorder
+        population_studies_use_collapse <- population_studies_use_collapse[with(population_studies_use_collapse,rev(order(proportion,x,gene))),]
       }
-      # Get the proportion + CI of carriers for each country 
-      population_studies_use_collapse$proportion        <-binom.confint(x=population_studies_use_collapse$Carrier_count,n=population_studies_use_collapse$x,method='wilson')$mean
-      population_studies_use_collapse$proportion.lower  <-binom.confint(x=population_studies_use_collapse$Carrier_count,n=population_studies_use_collapse$x,method='wilson')$lower
-      population_studies_use_collapse$proportion.upper  <-binom.confint(x=population_studies_use_collapse$Carrier_count,n=population_studies_use_collapse$x,method='wilson')$upper
-      # Filter file to pathogenic or LP genes 
-      if (regions_pathogenicity_selection == as.numeric(1)) {
-        population_studies_use_collapse=population_studies_use_collapse[population_studies_use_collapse$gene %in% path_genes,]
-      } 
-      else if ((regions_pathogenicity_selection == as.numeric(2))|(regions_pathogenicity_selection == as.numeric(3))) {
-        population_studies_use_collapse=population_studies_use_collapse[population_studies_use_collapse$gene %in% p_or_lp_genes,]
-      }
-      # Reorder
-      population_studies_use_collapse <- population_studies_use_collapse[with(population_studies_use_collapse,rev(order(proportion,x,gene))),]
-    }
-  } 
-  # Calculate unexplained proportion
-  unexplained<-100*(1-sum(population_studies_use_collapse$proportion))
-  # Plot unexplained proportion 
-  if (unexplained>0){
-    if (number<7){ # i.e if ALS 
-      end_pos <- left.1 + unexplained
     } 
-    else {
-      end_pos <- left.2 + unexplained
-    }
-    rect(start_pos,bottom,end_pos,top,col="grey70",border=NA)
-    text(start_pos+3,(bottom+top)/2,paste(round(unexplained,2),"%",sep=""),col="white",adj=0,cex=text_size*plot_height/1200)
-    start_pos<-end_pos
-  }
-  # Plot remaining proportions 
-  if (exists("population_studies_use_collapse")==TRUE){
-    number_of_boxes<-nrow(population_studies_use_collapse)
-    for (i in 1:number_of_boxes){
-      end_pos=start_pos+100*population_studies_use_collapse[i,]$proportion
-      gene_use<- population_studies_use_collapse[i,]$gene
-      colour<-vangogh_palette[match(gene_use,p_or_lp_genes)]
-      rect(start_pos,bottom,end_pos,top,col=colour,border=NA)
+    # Calculate unexplained proportion
+    unexplained<-100*(1-sum(population_studies_use_collapse$proportion))
+    # Plot unexplained proportion 
+    if (unexplained>0){
+      if (number<7){ # i.e if ALS 
+        end_pos <- left.1 + unexplained
+      } 
+      else {
+        end_pos <- left.2 + unexplained
+      } 
+      rect(start_pos,bottom,end_pos,top,col="grey70",border=NA)
+      text(start_pos+3,(bottom+top)/2,paste(round(unexplained,2),"%",sep=""),col="white",adj=0,cex=text_size*plot_height/1200)
       start_pos<-end_pos
     }
+    # Plot remaining proportions 
+    if (exists("population_studies_use_collapse")==TRUE){
+      number_of_boxes<-nrow(population_studies_use_collapse)
+      for (i in 1:number_of_boxes){
+        end_pos=start_pos+100*population_studies_use_collapse[i,]$proportion
+        gene_use<- population_studies_use_collapse[i,]$gene
+        colour<-vangogh_palette[match(gene_use,p_or_lp_genes)]
+        rect(start_pos,bottom,end_pos,top,col=colour,border=NA)
+        start_pos<-end_pos
+      }
+    }
   }
-}
-# Add text annotations to plot 
-text(right.2+3,c(87.5,77.5,57.5,47.5,27.5,17.5),c("Familial","Sporadic"),col=nicegrey,adj=0,cex=text_size*plot_height/1200,xpd=NA)
-text(left.1-3,c(82.5,52.5,22.5),c("Pathogenic Variants","Pathogenic & Likely Pathogenic Variants","Reported Variants in \nPathogenic & Likely Pathogenic Genes"),col=nicegrey,adj=1,cex=text_size*plot_height/1200,xpd=NA)
-text(c((left.1+right.1)/2,(left.2+right.2)/2),95,c("ALS","FTD"),col=nicegrey,adj=0.5,cex=text_size*plot_height/1200,xpd=NA)
-# lines to left of plot
-lines(x=c(left.1-2,left.1-2),y=c(90,75),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
-lines(x=c(left.1-2,left.1-2),y=c(60,45),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
-lines(x=c(left.1-2,left.1-2),y=c(30,15),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
-# Plot scale bars 
-scale_bar_plot_linear(left.1,right.1,text_size,plot_height)
-scale_bar_plot_linear(left.2,right.2,text_size,plot_height)
-lines(x=c(right.2+30,right.2+30),y=c(87.5,17.5),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
+  # Add text annotations to plot 
+  text(right.2+3,c(87.5,77.5,57.5,47.5,27.5,17.5),c("Familial","Sporadic"),col=nicegrey,adj=0,cex=text_size*plot_height/1200,xpd=NA)
+  text(left.1-3,c(82.5,52.5,22.5),c("Pathogenic Variants","Pathogenic & Likely Pathogenic Variants","Reported Variants in \nPathogenic & Likely Pathogenic Genes"),col=nicegrey,adj=1,cex=text_size*plot_height/1200,xpd=NA)
+  text(c((left.1+right.1)/2,(left.2+right.2)/2),95,c("ALS","FTD"),col=nicegrey,adj=0.5,cex=text_size*plot_height/1200,xpd=NA)
+  # lines to left of plot
+  lines(x=c(left.1-2,left.1-2),y=c(90,75),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
+  lines(x=c(left.1-2,left.1-2),y=c(60,45),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
+  lines(x=c(left.1-2,left.1-2),y=c(30,15),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
+  # Plot scale bars 
+  scale_bar_plot_linear(left.1,right.1,text_size,plot_height)
+  scale_bar_plot_linear(left.2,right.2,text_size,plot_height)
+  lines(x=c(right.2+30,right.2+30),y=c(87.5,17.5),col=nicegrey,lty=1,lwd=0.6*plot_height/1200,xpd=NA)
 
-# plot grey no variant box
-roundedRect(right.2+33,91,right.2+33+box_dimension,91+box_dimension,border="white",col="grey70", bothsame=TRUE, aspcorrect=TRUE,corfactor=6,xpd=NA)
-text(right.2+42,91+box_dimension/2,"No Variant",col=nicegrey,adj=0,cex=text_size*plot_height/1200,xpd=NA)
-# Plot boxes for remaining genes 
-height=86
-for (gene in unique(population_studies_use_collapse$gene[population_studies_use_collapse$gene %in% p_or_lp_genes])){
-  colour<-vangogh_palette[match(gene,p_or_lp_genes)]
-  roundedRect(right.2+33,height,right.2+33+box_dimension,height+box_dimension,border="white",col=colour, bothsame=TRUE, aspcorrect=TRUE,corfactor=6,xpd=NA)   
-  text(right.2+42,height+box_dimension/2,gene,col=nicegrey,adj=0,cex=text_size*plot_height/1200,font=3,xpd=NA)
-  height=height-5
-}
-
+  # plot grey no variant box
+  roundedRect(right.2+33,91,right.2+33+box_dimension,91+box_dimension,border="white",col="grey70", bothsame=TRUE, aspcorrect=TRUE,corfactor=6,xpd=NA)
+  text(right.2+42,91+box_dimension/2,"No Variant",col=nicegrey,adj=0,cex=text_size*plot_height/1200,xpd=NA)
+  # Plot boxes for remaining genes 
+  height=86
+  for (gene in unique(population_studies_use_collapse$gene[population_studies_use_collapse$gene %in% p_or_lp_genes])){
+    colour<-vangogh_palette[match(gene,p_or_lp_genes)]
+    roundedRect(right.2+33,height,right.2+33+box_dimension,height+box_dimension,border="white",col=colour, bothsame=TRUE, aspcorrect=TRUE,corfactor=6,xpd=NA)   
+    text(right.2+42,height+box_dimension/2,gene,col=nicegrey,adj=0,cex=text_size*plot_height/1200,font=3,xpd=NA)
+    height=height-5
+  }
 }
 
 # ####=========================================================================###
@@ -361,8 +368,6 @@ age_p_value_cutoff=function(all_ages_df){
       df<-as.data.frame(table(all_ages_df$HGVS[all_ages_df$all_carriers_family_history==fam])) 
       number_of_tests=number_of_tests+nrow(df[df$Freq>=number,])
     }
-
-
     # max p-value at this level
     max_p<-0.05/number_of_tests
     # Find the minimum possible p-value from the data at this level (i.e. the n youngest age of onset compared to the rest)
@@ -429,21 +434,21 @@ age_p_value_cutoff=function(all_ages_df){
       # "FUS:c.1577C>T(p.[P526L])"
     # Phe: ALS | Sex: F | Family History : F
       # "C9orf72:c.-45+163GGGGCC[>24]"
-    } 
-  }
+  } 
+}
 
-  min_age_p_value=function(variant_variant_browser,all_ages_df,age_p_cutoff){
-    variant_ages<-all_ages_df[all_ages_df$HGVS==variant_variant_browser & is.na(all_ages_df$HGVS)==F,]
-    all_ages<-all_ages_df[all_ages_df$HGVS!=variant_variant_browser& is.na(all_ages_df$HGVS)==F,]
-    if (nrow(variant_ages[!is.na(variant_ages$all_carriers_aoo),])==0 ){
-      this_list=list(
-        "min_p_value"="NA",
-        "min_phenotype"="NA",
-        "min_sex"="NA",
-        "min_fam"="NA",
-        "above"="NA",
-        "evidence"="no"
-        )
+min_age_p_value=function(variant_variant_browser,all_ages_df,age_p_cutoff){
+  variant_ages<-all_ages_df[all_ages_df$HGVS==variant_variant_browser & is.na(all_ages_df$HGVS)==F,]
+  all_ages<-all_ages_df[all_ages_df$HGVS!=variant_variant_browser& is.na(all_ages_df$HGVS)==F,]
+  if (nrow(variant_ages[!is.na(variant_ages$all_carriers_aoo),])==0 ){
+    this_list=list(
+      "min_p_value"="NA",
+      "min_phenotype"="NA",
+      "min_sex"="NA",
+      "min_fam"="NA",
+      "above"="NA",
+      "evidence"="no"
+      )
       return(this_list)
     }
     min_p_value<-kruskal_test(variant_ages$all_carriers_aoo,all_ages$all_carriers_aoo)
@@ -498,17 +503,17 @@ age_p_value_cutoff=function(all_ages_df){
      "evidence"=evidence
      )
    return(this_list)
- }
+}
 
- age_text_line_3=function(variant_variant_browser,all_ages_df,age_p_cutoff){
+age_text_line_3=function(variant_variant_browser,all_ages_df,age_p_cutoff){
   if(nrow(all_ages_df[all_ages_df$HGVS==variant_variant_browser & is.na(all_ages_df$HGVS)==F,])==0){
     return(HTML(paste("<b>Note:</b> No ages are recorded for variant ", variant_variant_browser, ". This contributes no evidence of pathogenicity.",sep="")))
-
   }
-  else{
+  else {
    return(HTML(paste("<b>Note:</b> The most significant p value observed is ",min_age_p_value(variant_variant_browser,all_ages_df,age_p_cutoff)$min_p_value," (Phenotype: ",min_age_p_value(variant_variant_browser,all_ages_df,age_p_cutoff)$min_phenotype," | Sex: ",min_age_p_value(variant_variant_browser,all_ages_df,age_p_cutoff)$min_sex," | Family History : ", min_age_p_value(variant_variant_browser,all_ages_df,age_p_cutoff)$min_fam,"). This is ",min_age_p_value(variant_variant_browser,all_ages_df,age_p_cutoff)$above," the significance threshold of ", formatC(age_p_cutoff, format = "e", digits = 2),". This contributes ",min_age_p_value(variant_variant_browser,all_ages_df,age_p_cutoff)$evidence," evidence of pathogenicity.",sep="")))
  }
 }
+
 # AGE FUNCTIONS TO FILTER DATA BASED ON USER SELECTIONS
 age_phenotype_selection=function(all_ages,variant_ages_x,gene_ages_x,phenotype_selection){
   this_list=list(
@@ -518,6 +523,7 @@ age_phenotype_selection=function(all_ages,variant_ages_x,gene_ages_x,phenotype_s
     )
   return(this_list)
 }
+
 #
 age_phenotype_selection_compare=function(all_ages_1,all_ages_2,variant_ages_x_1,variant_ages_x_2,gene_ages_x_1,gene_ages_x_2,phenotype_selection){
   this_list=list(
@@ -530,6 +536,7 @@ age_phenotype_selection_compare=function(all_ages_1,all_ages_2,variant_ages_x_1,
     )
   return(this_list)
 }
+
 #
 age_sex_selection=function(all_ages,variant_ages_x,gene_ages_x,sex_selection){
   this_list=list(
