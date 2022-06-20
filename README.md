@@ -1,7 +1,7 @@
 # journALS
 ### To Start:
 
-**Step1** :    		`git clone https://github.com/dohertymark/journALS.git` <br />
+**Step1** :    		`git clone https://github.com/dohertymark/journALS_Databrowser.git` <br />
 **Step2** : 		Navigate to your local journALS directory       	<br />
 **Step3** :		`bash Data_processing/correct_directories.sh pwd`  	<br /><br /> <br />
 ### TO RUN journALS  <br />
