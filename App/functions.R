@@ -172,56 +172,56 @@ scale_bar_plot_log=function(left,right,text_size){
 
 render.summary.proportion_explained.plot=function(lit_review_pen,plot_height){
   par(mfrow=c(1,1), mai = c(0.1,0.1,0.1,0.1))
-# Create Blank Plot 
-blank_plot(375,95)
-# Set Starting Plotting Variables
-text_size <- 1.2
-gap_between   <- 5
-end_pos       <- 100
-top           <- 90
-bottom        <- 85
-als_ftd_gap   <- 20
-left.1        <- 75
-right.1       <- left.1 + 100
-left.2        <- right.1 + als_ftd_gap 
-right.2       <- left.2 + 100
-box_dimension <- 4.5*plot_height/1200
-# Set Starting Variables 
-regions_phenotype_selection="ALS"
-regions_pathogenicity_selection="1" # 1 is P variants, 2 is P or LP variants, 3 is all variants 
-regions_history_selection="Familial"
-# 12 Groups to Plot
-# Variables change as we cycle through each group
-for (number in 1:12){
-  start_pos <- left.1
-  # Reset Plotting Variables
-  if (number %% 2 == 0 ){ #even numbers 
-    top<-bottom-gap_between
-    bottom<-top-gap_between
-    regions_history_selection="Sporadic"
-  }
-  if (number==3 | number==9){
-    top<-bottom-3*gap_between
-    bottom<-top-gap_between
-    regions_history_selection="Familial"
-    regions_pathogenicity_selection="2"
-  }
-  if (number==5 | number==11){
-    top<-bottom-3*gap_between
-    bottom<-top-gap_between
-    regions_history_selection="Familial"
-    regions_pathogenicity_selection="3"
-  }
-  if (number>=7){
-    start_pos <- left.2
-    end_pos <- start_pos
-  }
-  if (number==7){
-    top<-90
-    bottom<-top-gap_between
-    regions_history_selection="Familial"
-    regions_pathogenicity_selection="1"
-    regions_phenotype_selection="FTD"
+  # Create Blank Plot 
+  blank_plot(375,95)
+  # Set Starting Plotting Variables
+  text_size <- 1.2
+  gap_between   <- 5
+  end_pos       <- 100
+  top           <- 90
+  bottom        <- 85
+  als_ftd_gap   <- 20
+  left.1        <- 75
+  right.1       <- left.1 + 100
+  left.2        <- right.1 + als_ftd_gap 
+  right.2       <- left.2 + 100
+  box_dimension <- 4.5*plot_height/1200
+  # Set Starting Variables 
+  regions_phenotype_selection="ALS"
+  regions_pathogenicity_selection="1" # 1 is P variants, 2 is P or LP variants, 3 is all variants 
+  regions_history_selection="Familial"
+  # 12 Groups to Plot
+  # Variables change as we cycle through each group
+  for (number in 1:12){
+    start_pos <- left.1
+    # Reset Plotting Variables
+    if (number %% 2 == 0 ){ #even numbers 
+      top<-bottom-gap_between
+      bottom<-top-gap_between
+      regions_history_selection="Sporadic"
+    }
+    if (number==3 | number==9){
+      top<-bottom-3*gap_between
+      bottom<-top-gap_between
+      regions_history_selection="Familial"
+      regions_pathogenicity_selection="2"
+    }
+    if (number==5 | number==11){
+      top<-bottom-3*gap_between
+      bottom<-top-gap_between
+      regions_history_selection="Familial"
+      regions_pathogenicity_selection="3"
+    }
+    if (number>=7){
+      start_pos <- left.2
+      end_pos <- start_pos
+    }
+    if (number==7){
+      top<-90
+      bottom<-top-gap_between
+      regions_history_selection="Familial"
+      regions_pathogenicity_selection="1"
+      regions_phenotype_selection="FTD"
   }
   
   # Get list of potential variants 
